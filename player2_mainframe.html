@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+  <meta charset="utf-8">
+  <title>坦克大战</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  body
+  {
+     background: url("image/background.png");
+     background-repeat: no-repeat;
+     background-size:100%;
+  }
+  </style>
+  <style>
+  div.one
+  {
+      position: absolute;
+      top:0px;
+      left:0px;
+     
+  }
+  div.two
+  {
+      position: absolute;
+      top:400px;
+      left:0px;
+     
+  }
+  button.button1
+  {
+    background-color: aquamarine; 
+    border: none;
+    color:gold;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: absolute;
+    top:50px;
+    left:50px;
+  }
+  button.button2
+  {
+    background-color: cadetblue; 
+    border: none;
+    color: gold;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: absolute;
+    top:50px;
+    left:200px;
+  }
+  button.button3
+  {
+    background-color: teal; 
+    border: none;
+    color: gold;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    position: absolute;
+    top:50px;
+    left:350px;
+  }
+  p.life
+  {
+    font-size:30px;
+    font-family:"Times New Roman";
+    font-weight:bold;
+    color: aqua;
+  }
+  input.room
+  {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    position: absolute;
+    top:250px;
+    left:50px;
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 13px 14px;
+    width: 620px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Times New Roman";
+    BACKGROUND-COLOR: transparent;
+  }
+  input.passport
+  {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    position: absolute;
+    top:300px;
+    left:50px;
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 13px 14px;
+    width: 620px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Times New Roman";
+    BACKGROUND-COLOR: transparent;
+  }
+  </style>
+  </head>
+  <body>
+      <div class="one">
+          <img src="" id="onei">
+          <img src='' id="bullet">
+          <img src="" id="twoi">
+          <img src='' id="bullet2">
+          <img src='' id="ai1">
+          <img src='' id="ai2">
+          <img src='' id="ai3">
+          <img src='' id="ai4">
+          <img src='' id="ai5">
+          <img src='' id="aib1">
+          <img src='' id="aib2">
+          <img src='' id="aib3">
+          <img src='' id="aib4">
+          <img src='' id="aib5">
+          <img src='' id="food">
+          <button onclick="send()" class="button1" id="button1">battle</button>
+          <input type="text" id="room" class="room">
+          <input type="text" id="passport" class="passport">
+          <audio controls autoplay loop id="bg3">
+            <source src="music//background_music3.mp3" type="audio/mpeg">
+          </audio>
+          <audio controls autoplay loop id="bg2">
+            <source src="music//background_music2.mp3" type="audio/mpeg">
+          </audio>
+          <audio controls autoplay loop id="bg1">
+            <source src="music//background_music1.mp3" type="audio/mpeg">
+          </audio>
+          <audio controls autoplay id="boom">
+            <source src="music/bang.wav" type="audio/mpeg">
+          </audio>
+          <audio controls autoplay id="start">
+            <source src="music/start.wav" type="audio/mpeg">
+          </audio>
+      </div>
+      <div class="two">
+        <p id="lost"></p>
+        <br>
+        <p id="life" class="life"></p>
+      </div>
+  </body>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <script>
+        document.getElementById("bg1").style.display="none";
+          document.getElementById("bg2").style.display="none";
+          document.getElementById("bg3").style.display="none";
+          document.getElementById("boom").style.display="none";
+          document.getElementById("start").style.display="none";
+          var x=300,y=100;
+          var bx=12,by=12;
+          var is_bullet=false;
+          var bdir;
+          var dir=3;
+          var num_ai=0;
+          var T=0;
+          var ai_dir=[];
+          var ai_x=[];
+          var ai_y=[];
+          var ai_bx=[];
+          var ai_by=[];
+          var ai_bdir=[];
+          var ai_able_to_fire=[true,true,true,true,true,true,true];
+          var life;
+          var ai_survive=[true,false,false,false,false,false,false];
+          var tempkeycode=0;
+          var is_move=0;
+          var last=10;
+          var max_ai_num;
+          var alert_before=0;
+          var map_now;
+          var x2,y2,dir2;
+          var bx2,by2,bdir2;
+          var count;
+          var TT=0;
+            if (window.WebSocket) {
+                socket = new WebSocket("ws://localhost:8080/ws");
+            }
+                //1 map
+                //2 ai x y dir su
+                //3 aib x y dir su
+                //4 p1 x y dir
+                //5 b bx by bdir
+                //6 p2
+                //7 b2
+            var roomnum,passnum;
+            
+            socket.onmessage = function (event2) {
+                if(event2.data[1]=='p')
+                {
+                    var tempdata=event2.data.substring(1);
+                    var ttt;
+                    for(i=1;i<tempdata.length;i++)
+                    {
+                        if(tempdata[i]=='o')
+                        {
+                            ttt=i;
+                        }
+                    }
+                    passnum=tempdata.substring(1,ttt);
+                    roomnum=tempdata.substring(ttt+1);
+                }
+                
+            }
+            function send() 
+             {   
+               console.log(passnum);
+               console.log(roomnum);
+                if(passnum==document.getElementById("passport").value)
+                {
+                    
+                    var audio1=document.getElementById("start");
+                    audio1.play();
+                socket.send("j");
+                socket.onmessage = function (event) {
+                   var tempstr=event.data;
+                   document.getElementById("button1").style.display="none";
+                   document.getElementById("passport").style.display="none";
+                    document.getElementById("room").style.display="none";
+                  // console.log(0);
+                  if (tempstr==':refresh')
+                  {
+                    location.reload();
+                  }
+                  if (tempstr==':bgm1')
+                  {
+                    var audio2=document.getElementById("bg1");
+                    audio2.play();
+                  }
+                  if (tempstr==':bgm2')
+                  {
+                    var audio2=document.getElementById("bg2");
+                    audio2.play();
+                  }
+                  if (tempstr==':bgm3')
+                  {
+                    var audio2=document.getElementById("bg3");
+                    audio2.play();
+                  }
+                  if (tempstr==':alert_lost')
+                  {
+                    alert("you have lost");
+                  }
+                  if(tempstr==":mb")
+                  {
+                    var audio = new Audio("music//bang.wav");
+                      audio.play();
+                  }
+                  if(tempstr[1]=='1')
+                   {
+                       map_now=tempstr.substring(2).split(",");
+                       for(i=0;i<map_now.length;i++)
+                       {
+                            map_now[i]=Number(map_now[i]);
+                       }
+                       //console.log(1);
+                       if(TT==0)
+                       {
+                           TT=1;
+                           for(i=1;i<=30;i++)
+                            {
+                                for(j=1;j<=30;j++)
+                                {
+                                //0 space 
+                                //1 brick
+                                //2 home
+                                //3 iron
+                                //4 water
+                                // tree
+                                if(map_now[(i-1)*(30)+j-1]==2&&map_now[(i-2)*30+j-1]!=2&&map_now[(i-1)*30+j-2]!=2)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//home2.png\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+
+                                    var txt1="<img id=\""+((i)*(30)+j-1).toString()+"\" src=\"\">";
+                                    $("body").append(txt1); 
+                                    var x=(i)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+
+                                    var txt1="<img id=\""+((i-1)*(30)+j).toString()+"\" src=\"\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j).toString());
+                                    temp.style.cssText=st;
+
+                                    var txt1="<img id=\""+((i)*(30)+j).toString()+"\" src=\"\">";
+                                    $("body").append(txt1); 
+                                    var x=(i)*12;
+                                    var y=(j)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i)*(30)+j).toString());
+                                    temp.style.cssText=st;
+                                }
+                                if(map_now[(i-1)*30+j-1]==0)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    //var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//iron.png\">";
+                                    /*$("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    count++;*/
+                                }
+                                if(map_now[(i-1)*30+j-1]==1)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//brick.png\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    count++;
+                                }
+                                if(map_now[(i-1)*30+j-1]==3)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//iron.png\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    count++;
+                                }
+                                if(map_now[(i-1)*30+j-1]==4)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//river1.png\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    count++;
+                                }
+                                if(map_now[(i-1)*30+j-1]==5)
+                                {
+                                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//tree.png\">";
+                                    $("body").append(txt1); 
+                                    var x=(i-1)*12;
+                                    var y=(j-1)*12;
+                                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                                    temp.style.cssText=st;
+                                    count++;
+                                }
+                                }
+                            }
+                       }
+                       else{
+                        for(i=1;i<=30;i++)
+                        {
+                            for(j=1;j<=30;j++)
+                            {
+                            var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                            if(map_now[(i-1)*(30)+j-1]==0)
+                            {
+                                
+                                
+                                temp.src="";
+                                //console.log(1);
+                                
+                                
+                            
+                            
+                            }
+                            
+                            ////console.log(i.toString()+','+j.toString()+':'+now[(i-1)*(30)+j-1].toString())
+                            }
+                        }
+                       }
+                   }
+                   if(tempstr[1]=='2')
+                   {
+                        var temp_ai=tempstr.substring(2).split(",");
+                        ai_x.push(0);
+                        ai_y.push(0);
+                        ai_dir.push(0);
+                        for(i=1;i<=5;i++)
+                        {
+                            if(temp_ai[(i-1)*4+3]=='1')
+                            {
+                                ai_x.push(Number(temp_ai[(i-1)*4+0]));
+                                ai_y.push(Number(temp_ai[(i-1)*4+1]));
+                                ai_dir.push(Number(temp_ai[(i-1)*4+2]));
+                            }
+                        }
+                        //console.log(2);
+                        for(i=1;i<ai_x.length;i++)
+                        {
+                            var strtemp="ai"+i.toString();
+                            var temp1=document.getElementById(strtemp);
+                            if(ai_dir[i]==1)
+                            {
+                                temp1.src="image//enemy_tank_left.png";
+                            }
+                            if(ai_dir[i]==2)
+                            {
+                                temp1.src="image//enemy_tank_right.png";
+                            }
+                            if(ai_dir[i]==3)
+                            {
+                                temp1.src="image//enemy_tank_up.png";
+                            }
+                            if(ai_dir[i]==4)
+                            {
+                                temp1.src="image//enemy_tank_down.png";
+                            }
+                            var temp=document.getElementById(strtemp);
+                            var st="position: absolute;top:"+ai_x[i].toString()+"px;left:"+ai_y[i].toString()+"px;";
+                            temp.style.cssText=st;
+                        }
+                   }
+                   if(tempstr[1]=='3')
+                   {
+                        var temp_aib=tempstr.substring(2).split(",");
+                        ai_bx.push(0);
+                        ai_by.push(0);
+                        ai_bdir.push(0);
+                        for(i=1;i<=5;i++)
+                        {
+                            if(temp_aib[(i-1)*4+3]=='1')
+                            {
+                                ai_bx.push(Number(temp_aib[(i-1)*4+0]));
+                                ai_by.push(Number(temp_aib[(i-1)*4+1]));
+                                ai_bdir.push(Number(temp_aib[(i-1)*4+2]));
+                            }
+                        }
+                       // console.log(ai_bdir);
+                        for(i=1;i<=5;i++)
+                        {
+                            var strtemp="aib"+i.toString();
+                            var temp=document.getElementById(strtemp);
+                            temp.src="";
+                        }
+                        for(i=1;i<ai_bx.length;i++)
+                        {
+                            var strtemp="aib"+i.toString();
+                            var temp=document.getElementById(strtemp);
+                            var st="position: absolute;top:"+ai_bx[i].toString()+"px;left:"+ai_by[i].toString()+"px;";
+                                    temp.style.cssText=st;
+                                    var temp=document.getElementById(strtemp);
+                                    if(ai_bdir[i]==1)
+                                    {
+                                        temp.src="image//bullet_left.png";
+                                    }
+                                    else if(ai_bdir[i]==2)
+                                    {
+                                        temp.src="image//bullet_right.png";
+                                    }else if(ai_bdir[i]==3)
+                                    {
+                                        temp.src="image//bullet_up.png";
+                                    }else{
+                                        temp.src="image//bullet_down.png";
+                                    }
+                        }
+                   }
+                   if(tempstr[1]=='4')
+                   {
+                       
+                        var temp_aii=tempstr.substring(2).split(",");
+                       // console.log(temp_aii);
+                        x=Number(temp_aii[0]);
+                        y=Number(temp_aii[1]);
+                        dir=Number(temp_aii[2]);
+                        //console.log(x);
+                        var temp1=document.getElementById("onei");
+                        if(dir==1)
+                        {
+                            temp1.src="image//player1_tank_1_left.png";
+                        }
+                        if(dir==2)
+                        {
+                            temp1.src="image//player1_tank_1_right.png";
+                        }
+                        if(dir==3)
+                        {
+                            temp1.src="image//player1_tank_1_up.png";
+                        }
+                        if(dir==4)
+                        {
+                            temp1.src="image//player1_tank_1_down.png";
+                        }
+                        //var temp=document.getElementById("onei");
+                        var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                        
+                        temp1.style.cssText=st;
+                   }
+                   if(tempstr[1]=='5')
+                   {
+                       if(tempstr[2]=='n')
+                       {
+                        var temp=document.getElementById("bullet");
+                        //var st="position: absolute;top:"+bx.toString()+"px;left:"+by.toString()+"px;";
+                        //temp.style.cssText=st;
+                        temp.src="";
+                        
+                       }
+                       else{
+                           var temp_ai2=tempstr.substring(2).split(",");
+                            bx=Number(temp_ai2[0]);
+                            by=Number(temp_ai2[1]);
+                            bdir=Number(temp_ai2[2]);
+                            //console.log(5);
+                            var temp=document.getElementById("bullet");
+                            var st="position: absolute;top:"+bx.toString()+"px;left:"+by.toString()+"px;";
+                            temp.style.cssText=st;
+                            if(bdir==1)
+                            {
+                                temp.src="image//bullet_left.png";
+                            }
+                            else if(bdir==2)
+                            {
+                                temp.src="image//bullet_right.png";
+                            }else if(bdir==3)
+                            {
+                                temp.src="image//bullet_up.png";
+                            }else{
+                                temp.src="image//bullet_down.png";
+                            }
+                       }
+                        
+                   }
+                   if(tempstr[1]=='6')
+                   {
+                        var temp_ai3=tempstr.substring(2).split(",");
+                        x2=Number(temp_ai3[0]);
+                        y2=Number(temp_ai3[1]);
+                        dir2=Number(temp_ai3[2]);
+                        var templife=Number(temp_ai3[3]);
+                       // console.log(temp_ai3);
+                        var temp1=document.getElementById("twoi");
+                        if(dir2==1)
+                        {
+                            temp1.src="image//player2_tank_1_left.png";
+                        }
+                        if(dir2==2)
+                        {
+                            temp1.src="image//player2_tank_1_right.png";
+                        }
+                        if(dir2==3)
+                        {
+                            temp1.src="image//player2_tank_1_up.png";
+                        }
+                        if(dir2==4)
+                        {
+                            temp1.src="image//player2_tank_1_down.png";
+                        }
+                        var temp=document.getElementById("twoi");
+                        var st="position: absolute;top:"+x2.toString()+"px;left:"+y2.toString()+"px;";
+                        temp.style.cssText=st;
+                        document.getElementById('life').innerHTML="life:"+templife.toString();
+                   }
+                   if(tempstr[1]=='8')
+                   {
+                        if(tempstr[2]=='n')
+                       {
+                        var temp=document.getElementById("food");
+                        //var st="position: absolute;top:"+bx.toString()+"px;left:"+by.toString()+"px;";
+                        //temp.style.cssText=st;
+                        temp.src="";
+                        
+                       }
+                       else{
+                           var temp_aibb=tempstr.substring(2).split(",");
+                            bx2=Number(temp_aibb[1]);
+                            by2=Number(temp_aibb[2]);
+                            bdir2=Number(temp_aibb[0]);
+                            console.log(bx2);
+                            var temp=document.getElementById("bullet2");
+                            var st="position: absolute;top:"+bx2.toString()+"px;left:"+by2.toString()+"px;";
+                            temp.style.cssText=st;
+                            if(bdir2==1)
+                            {
+                                temp.src="image//food_tank.png";
+                            }
+                            else if(bdir2==2)
+                            {
+                                temp.src="image//food_clock.png";
+                            }else if(bdir2==3)
+                            {
+                                temp.src="image//food_boom.png";
+                            }
+                       }
+                        
+                   }
+                   if(tempstr[1]=='7')
+                   {
+                        if(tempstr[2]=='n')
+                       {
+                        var temp=document.getElementById("bullet2");
+                        //var st="position: absolute;top:"+bx.toString()+"px;left:"+by.toString()+"px;";
+                        //temp.style.cssText=st;
+                        temp.src="";
+                        
+                       }
+                       else{
+                           var temp_aibb=tempstr.substring(2).split(",");
+                            bx2=Number(temp_aibb[0]);
+                            by2=Number(temp_aibb[1]);
+                            bdir2=Number(temp_aibb[2]);
+                            console.log(bx2);
+                            var temp=document.getElementById("bullet2");
+                            var st="position: absolute;top:"+bx2.toString()+"px;left:"+by2.toString()+"px;";
+                            temp.style.cssText=st;
+                            if(bdir2==1)
+                            {
+                                temp.src="image//bullet_left.png";
+                            }
+                            else if(bdir2==2)
+                            {
+                                temp.src="image//bullet_right.png";
+                            }else if(bdir2==3)
+                            {
+                                temp.src="image//bullet_up.png";
+                            }else{
+                                temp.src="image//bullet_down.png";
+                            } 
+                       }
+                        
+                   }
+                   if(tempstr[1]=='f')
+                   {
+                       //console.log('f');
+                     //  reptint();
+                       
+                        ai_dir=[];
+                         ai_x=[];
+                         ai_y=[];
+                         ai_bx=[];
+                         ai_by=[];
+                         ai_bdir=[];
+                        // ai_able_to_fire=[true,true,true,true,true,true,true];
+                         life;
+                         //ai_survive=[true,false,false,false,false,false,false];
+                         is_move=0;
+                         map_now=[];
+                         //x2=y2=dir2=0;
+                        // bx2=by2=bdir2=0;
+                         keypress();
+                   }
+                };
+            }
+        }
+                                    
+                                
+                            
+                        
+                    
+                
+                 
+          
+          function repaint()
+          {
+            
+                 
+              var count=0;
+              for(i=1;i<=30;i++)
+              {
+                for(j=1;j<=30;j++)
+                {
+                  //0 space 
+                  //1 brick
+                  //2 home
+                  //3 iron
+                  //4 water
+                  // tree
+                  var ii=Math.floor((i+1)/2),jj=Math.floor((j+1)/2);
+                  now.push(ditu[(ii-1)*(15)+jj-1]);
+                  if(now[(i-1)*(30)+j-1]==2&&now[(i-2)*30+j-1]!=2&&now[(i-1)*30+j-2]!=2)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//home2.png\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+
+                    var txt1="<img id=\""+((i)*(30)+j-1).toString()+"\" src=\"\">";
+                    $("body").append(txt1); 
+                    var x=(i)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+
+                    var txt1="<img id=\""+((i-1)*(30)+j).toString()+"\" src=\"\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j).toString());
+                    temp.style.cssText=st;
+
+                    var txt1="<img id=\""+((i)*(30)+j).toString()+"\" src=\"\">";
+                    $("body").append(txt1); 
+                    var x=(i)*12;
+                    var y=(j)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i)*(30)+j).toString());
+                    temp.style.cssText=st;
+                  }
+                  if(ditu[(ii-1)*(15)+jj-1]==0)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    //var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//iron.png\">";
+                    /*$("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    count++;*/
+                  }
+                  if(ditu[(ii-1)*(15)+jj-1]==1)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//brick.png\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    count++;
+                  }
+                  if(ditu[(ii-1)*(15)+jj-1]==3)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//iron.png\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    count++;
+                  }
+                  if(ditu[(ii-1)*(15)+jj-1]==4)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//river1.png\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    count++;
+                  }
+                  if(ditu[(ii-1)*(15)+jj-1]==5)
+                  {
+                    var txt1="<img id=\""+((i-1)*(30)+j-1).toString()+"\" src=\"image//tree.png\">";
+                    $("body").append(txt1); 
+                    var x=(i-1)*12;
+                    var y=(j-1)*12;
+                    var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+                    var temp=document.getElementById(((i-1)*(30)+j-1).toString());
+                    temp.style.cssText=st;
+                    count++;
+                  }
+                }
+              }
+              for(i=1;i<ai_x.length();i++)
+              {
+                  var strtemp="ai"+creat_num.toString();
+                  var temp1=document.getElementById(strtemp);
+                  if(ai_dir[i]==1)
+                  {
+                      temp1.src="image//enemy_tank_left.png";
+                  }
+                  if(ai_dir[i]==2)
+                  {
+                      temp1.src="image//enemy_tank_right.png";
+                  }
+                  if(ai_dir[i]==3)
+                  {
+                      temp1.src="image//enemy_tank_up.png";
+                  }
+                  if(ai_dir[i]==4)
+                  {
+                      temp1.src="image//enemy_tank_down.png";
+                  }
+                  var temp=document.getElementById(strtemp);
+                  var st="position: absolute;top:"+ai_x[i].toString()+"px;left:"+ai_y[i].toString()+"px;";
+                  temp.style.cssText=st;
+              }
+              for(i=1;i<ai_bx.length();i++)
+              {
+                var strtemp="aib"+i.toString();
+                var temp=document.getElementById(strtemp);
+                var st="position: absolute;top:"+ai_bx[i].toString()+"px;left:"+ai_by[i].toString()+"px;";
+                          temp.style.cssText=st;
+                          var temp=document.getElementById(strtemp);
+                          if(ai_bdir[i]==1)
+                          {
+                              temp.src="image//bullet_left.png";
+                          }
+                          else if(ai_bdir[i]==2)
+                          {
+                              temp.src="image//bullet_right.png";
+                          }else if(ai_bdir[i]==3)
+                          {
+                              temp.src="image//bullet_up.png";
+                          }else{
+                              temp.src="image//bullet_down.png";
+                          }
+              }
+              var temp1=document.getElementById("onei");
+              if(dir==1)
+              {
+                  temp1.src="image//player1_tank_1_left.png";
+              }
+              if(dir==2)
+              {
+                  temp1.src="image//player1_tank_1_right.png";
+              }
+              if(dir==3)
+              {
+                  temp1.src="image//player1_tank_1_up.png";
+              }
+              if(dir==4)
+              {
+                  temp1.src="image//player1_tank_1_down.png";
+              }
+            var temp=document.getElementById("onei");
+            var st="position: absolute;top:"+x.toString()+"px;left:"+y.toString()+"px;";
+            temp.style.cssText=st;
+            var temp=document.getElementById("bullet");
+            var st="position: absolute;top:"+bx.toString()+"px;left:"+by.toString()+"px;";
+            temp.style.cssText=st;
+            if(bdir==1)
+            {
+                temp.src="image//bullet_left.png";
+            }
+            else if(bdir==2)
+            {
+                temp.src="image//bullet_right.png";
+            }else if(bdir==3)
+            {
+                temp.src="image//bullet_up.png";
+            }else{
+                temp.src="image//bullet_down.png";
+            }
+
+            var temp1=document.getElementById("twoi");
+              if(dir2==1)
+              {
+                  temp1.src="image//player1_tank_1_left.png";
+              }
+              if(dir2==2)
+              {
+                  temp1.src="image//player1_tank_1_right.png";
+              }
+              if(dir2==3)
+              {
+                  temp1.src="image//player1_tank_1_up.png";
+              }
+              if(dir2==4)
+              {
+                  temp1.src="image//player1_tank_1_down.png";
+              }
+            var temp=document.getElementById("twoi");
+            var st="position: absolute;top:"+x2.toString()+"px;left:"+y2.toString()+"px;";
+            temp.style.cssText=st;
+            var temp=document.getElementById("bullet2");
+            var st="position: absolute;top:"+bx2.toString()+"px;left:"+by2.toString()+"px;";
+            temp.style.cssText=st;
+            if(bdir2==1)
+            {
+                temp.src="image//bullet_left.png";
+            }
+            else if(bdir2==2)
+            {
+                temp.src="image//bullet_right.png";
+            }else if(bdir2==3)
+            {
+                temp.src="image//bullet_up.png";
+            }else{
+                temp.src="image//bullet_down.png";
+            } 
+          }   
+        function keypress()
+        {
+            document.addEventListener('keydown',function(e){
+                  ////console.log(count.toString());
+                  if(e.keyCode == 37){
+                   left_move();
+                    }
+                  else if(e.keyCode == 39){
+                    right_move();
+                          
+                      
+                  }else if(e.keyCode == 38){
+                    up_move();
+                      
+                  }else if(e.keyCode == 40){
+                    down_move();
+                      
+                  }else if(e.keyCode == 70){
+                    my_fire();
+              
+                  }
+                
+  
+                 });
+        }
+        function left_move()
+        {
+            if(is_move==0)
+            {
+                is_move=1;
+                socket.send("l");
+            }
+            
+        }
+        function right_move()
+        {
+            if(is_move==0)
+            {
+                socket.send("r");
+                is_move=1;
+            }
+            
+        }
+        function up_move()
+        {
+            if(is_move==0)
+            {
+                socket.send("u");
+                is_move=1;
+            }
+            
+        }
+        function down_move()
+        {
+            if(is_move==0)
+            {
+                socket.send("d");
+                is_move=1;
+            }
+            
+        }
+        function my_fire()
+        {
+            socket.send("g");
+        }
+       
+  </script>
+  </html>
+  
